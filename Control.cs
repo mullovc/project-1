@@ -1,17 +1,17 @@
 using UnityEngine;
 using System.Collections;
 
-public class Control : MonoBehaviour {
+public class Control : MonoBehaviour {					//von der Klasse hab ich schon erzählt. Sie ist zustaendig für die Steuerung des Characters. Ungeschickterweise habe ich aber auch die GUI fuer das Ingame-Menu hier reingepackt
 	
-	public GUISkin	buttonSkin;
-	public bool 	alternativeControl = false;
-	public Camera	mapCamera_prefab;
-	Camera			mapCamera;
+	public GUISkin	buttonSkin;							//das Prefab für den Skin der Menu-Buttons
+	public bool 	alternativeControl = false;			//es gibt zwei verschiedene Steuerungen. Bei true benutzt das Spiel die eine Steuerung, bei false die andere
+	public Camera	mapCamera_prefab;					//das Prefab für die Kamera, mit welcher man die Map (über das Ingame-Menu) sieht
+	Camera			mapCamera;							//die Instanz der Map-Kamera
 	
 	bool 			menuIsOpen = false;
-	bool 			gameIsPaused;
-	Vector2 		initialMousePos;
-	int				showMenuRegister = 0;
+	bool 			gameIsPaused;						//wenn true, dann ist das Laufen deaktiviert
+	Vector2 		initialMousePos;					//wenn die alternative Steuerung an ist, ist das hier der Bezugspunkt, um die Laufgeschwindigkeit zu gerechnen
+	int				showMenuRegister = 0;				//hier wird vermerkt, welches Register im Ingame-Menu offen ist. Bei 0 ist kein Register offen
 	
 	void Start ()
 	{
@@ -19,10 +19,10 @@ public class Control : MonoBehaviour {
 	
 	void OnGUI()
 	{
-		GUI.skin = buttonSkin;
-		if(!menuIsOpen)
+		GUI.skin = buttonSkin;							//der aktuelle Skin der Buttons wird auf buttonSkin gesetzt 
+		if(!menuIsOpen)									//dieser Button soll nur angezeigt werden, wenn das Menu geschlossen ist
 		{
-			if(GUI.Button(new Rect(10,10,60,50),"Avatar"))
+			if(GUI.Button(new Rect(10,10,60,50),"Avatar"))			//dieser Button wird wärend des Spiels oben links angezeigt
 			{
 				menuIsOpen = true;
 				gameIsPaused = true;
@@ -30,7 +30,7 @@ public class Control : MonoBehaviour {
 		}
 		if(menuIsOpen)
 		{
-			GUI.Window(0,new Rect(20,20,Screen.width - 40, Screen.height - 40),menuWindow,"Menu");
+			GUI.Window(0,new Rect(20,20,Screen.width - 40, Screen.height - 40),menuWindow,"Menu");		//das Menufenster wird geöffnet und mit "menuWindow(int)" gebaut. Das Fenster hat den Fensterindex 0
 		}
 		
 	}

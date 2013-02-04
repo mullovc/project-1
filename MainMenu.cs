@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class MainMenu : MonoBehaviour {
+public class MainMenu : MonoBehaviour {					//dieser Script kommt nur in der Szene 0 vor und erstellt die GUI fuer das Hauptmenu
 	
 	public GUISkin ButtonSkin;
 	
@@ -20,9 +20,11 @@ public class MainMenu : MonoBehaviour {
 			}
 			if(GUI.Button(new Rect(0,25,100,20),"Load"))
 			{
+														//wird noch hinzugefuegt
 			}
 			if(GUI.Button(new Rect(0,50,100,20),"Settings"))
 			{
+														//wird noch hinzugefuegt
 			}
 			if(GUI.Button(new Rect(0,75,100,20),"Quit"))
 			{

@@ -2,20 +2,20 @@ using UnityEngine;
 using System.Collections;
 using System.IO;
 
-public class Main : MonoBehaviour {
+public class Main : MonoBehaviour {							//diese Klasse ist am obersten in der Hierarchie und ist an der Main-Camera angeheftet
 	
 	MyTerrain 			terrain;
 	
-	public GameObject 	terrain_prefab;
-	public Transform	character_prefab;
-	public Transform 	character;
+	public GameObject 	terrain_prefab;						//das Prefab, an dem der MyTerrain-Script angeheftet wird
+	public Transform	character_prefab;					//das Prefab des Character-Assets
+	public Transform 	character;							//die Instanz des Characters
 	
 	// Use this for initialization
 	void Start ()
 	{
-		character = Instantiate(character_prefab,new Vector3(0,1,0),Quaternion.identity) as Transform;
-		character.parent = this.transform;
-		terrain = terrain_prefab.GetComponent<MyTerrain>();
+		character = Instantiate(character_prefab,new Vector3(0,1,0),Quaternion.identity) as Transform;	//Character wird instanziiert
+		character.parent = this.transform;																//Character bekommt die Main Camera als Parent
+		terrain = terrain_prefab.GetComponent<MyTerrain>();												//ich hab im drecks C# noch keine andere Methode entdeckt, Objekte von MonoBehaviour-Klassen zu deklarieren
 		terrain.buidTerrain();
 	}
 	
@@ -23,7 +23,7 @@ public class Main : MonoBehaviour {
 	{
 	}
 	
-	void loadGame()
+	void loadGame()																						//ignorier diese Methode
 	{
 		string x_str = "", z_str = "";
 		int x = 0, z = 0;
