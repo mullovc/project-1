@@ -32,7 +32,7 @@ public class EnemyAI : MonoBehaviour {
 		GUI.Label(new Rect(enemyScreenPos.x - 10, Screen.height - enemyScreenPos.y - Screen.height * 0.15f,50,20),stats.HP.ToString());
 	}
 	
-	void followCharacter()
+	void chaseCharacter()
 	{
 		Vector3 characterPos = main.character.transform.position; 
 		
@@ -47,7 +47,7 @@ public class EnemyAI : MonoBehaviour {
 		if(z < -10)
 			z = -10;
 		
-		if(!main.gameIsPaused)
+		if(!main.gameIsPaused && !(x < 1 && x > -1 && z < 1 && z > -1))
 			transform.Translate(new Vector3(x * Time.fixedDeltaTime, 0, z * Time.fixedDeltaTime),Space.World);
 		
 		alpha = Mathf.Atan((characterPos.x - this.transform.position.x) / (characterPos.z - this.transform.position.z)) * (180 / Mathf.PI);
@@ -58,7 +58,7 @@ public class EnemyAI : MonoBehaviour {
 	
 	void attack()
 	{
-		if(timeScinceLastAttack >= stats.attackRate && !main.gameIsPaused)
+		if(timeScinceLastAttack >= stats.attackRate && !main.gameIsPaused && (x < 1 && x > -1 && z < 1 && z > -1))
 		{
 			characterStats.HP--;
 			timeScinceLastAttack = 0;
@@ -73,8 +73,7 @@ public class EnemyAI : MonoBehaviour {
 		if(stats.HP <= 0)
 			Destroy(this.gameObject);
 		
-		followCharacter();
-		if(x < 1 && x > -1 && z < 1 && z > -1)
-			attack();
+		chaseCharacter();
+		attack();
 	}
 }

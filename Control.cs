@@ -58,7 +58,6 @@ public class Control : MonoBehaviour {
 		if(stats.HP <= 0)
 		{
 			main.gameOver = true;
-			print (stats.HP);
 		}
 			
 	}

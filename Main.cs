@@ -49,6 +49,11 @@ public class Main : MonoBehaviour {
 		{
 			GUI.Window(0,new Rect(20,20,Screen.width - 40, Screen.height - 40),menuWindow,"Menu");
 		}
+		if(gameOver)
+		{
+			gameIsPaused = true;
+			GUI.Box(new Rect((Screen.width * 0.75f) / 2,(Screen.height * 0.75f) / 2,Screen.width * 0.3f,Screen.height * 0.3f),"Game Over");
+		}
 		
 	}
 	
