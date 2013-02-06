@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
-public class MyTerrain : MonoBehaviour {								//in dieser Klasse wird das Terrain gebaut, welches momentan 20*20 Kacheln, also Tiles sind
+public class MyTerrain : MonoBehaviour {
 	
-	const int 			WorldSize = 20;									//die Weltgroesse (die Welt ist immer quadratisch)
-	GameObject 			world;											//dient als Parent fuer alle Tiles
-	Transform[,] 		terrain = new Transform[WorldSize,WorldSize];	//der zweidimensionale-Array, welcher die Referenzen auf alle Tiles hat
-	public Transform 	tile_prefab;									//das Prefab der Tiles. Aus ihnen besteht das Terrain
+	const int 			WorldSize = 20;
+	GameObject 			world;
+	GameObject[,] 		terrain = new GameObject[WorldSize,WorldSize];
+	public GameObject 	tile_prefab;
 	
 	void Start ()
 	{
@@ -15,12 +15,14 @@ public class MyTerrain : MonoBehaviour {								//in dieser Klasse wird das Terr
 	public void buidTerrain()
 	{
 		world = new GameObject();
+		world.gameObject.name = "world";
+		
 		for(int i = 0; i < WorldSize; i++)
 		{
 			for(int j = 0; j < WorldSize; j++)
 			{
-				terrain[j,i] = Instantiate(tile_prefab, new Vector3((j - WorldSize / 2) * 3,0,(i - WorldSize / 2) * 3), Quaternion.identity) as Transform;	//die Kacheln werden im Abstand von 3 gesetzt. Es wird WorldSize/2 subtrahiert, damit die Kacheln um den Punkt(0|0) gebaut werden
-				terrain[j,i].parent = world.transform;
+				terrain[j,i] = Instantiate(tile_prefab, new Vector3((j - WorldSize / 2) * 3,0,(i - WorldSize / 2) * 3), Quaternion.identity) as GameObject;
+				terrain[j,i].transform.parent = world.transform;
 			}
 		}
 	}
