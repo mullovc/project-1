@@ -11,6 +11,7 @@ public class Main : MonoBehaviour {
 	public GUISkin		buttonSkin;
 	public Camera		mapCamera_prefab;
 	Camera				mapCamera;
+	Control				control;
 	
 	public GameObject	character_prefab;
 	public GameObject	character;
@@ -26,7 +27,7 @@ public class Main : MonoBehaviour {
 	{
 		character = Instantiate(character_prefab,new Vector3(0,1,0),Quaternion.identity) as GameObject;
 		character.transform.parent = this.transform;
-		Control control = character.GetComponent<Control>();
+		control = character.GetComponent<Control>();
 		control.main = this;
 		terrain = Instantiate(terrain_prefab,transform.position,Quaternion.identity)as MyTerrain;
 		terrain.buidTerrain();
@@ -92,7 +93,11 @@ public class Main : MonoBehaviour {
 			}
 			if(showMenuRegister == 1)
 			{
-				//alternativeControl = GUI.Toggle(new Rect(0,30,150,20),alternativeControl,"Left screenhalf control");
+				control.alternativeControl = GUI.Toggle(new Rect(0,30,150,20),control.alternativeControl,"Left screenhalf control");
+				GUI.Label(new Rect(0,50,150,20),"enemy spawnrate: " + spawner.spawnRate);
+				spawner.spawnRate = (int)GUI.HorizontalSlider(new Rect(150,55,150,20),spawner.spawnRate,1,500);
+				GUI.Label(new Rect(0,70,150,20),"enemy spawnlimit: " + spawner.spawnLimit);
+				spawner.spawnLimit = (int)GUI.HorizontalSlider(new Rect(150,75,150,20),spawner.spawnLimit,0,100);
 			}
 			if(showMenuRegister == 2)
 			{

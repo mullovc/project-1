@@ -6,7 +6,7 @@ public class NPCSpawner : MonoBehaviour {
 	public Main			main;
 	
 	public GameObject 	enemyModel_prefab;
-	GameObject[]		enemy = new GameObject[10];
+	GameObject[]		enemy = new GameObject[100];
 	
 	System.Random 		rand = new System.Random();
 	bool 				hostile;

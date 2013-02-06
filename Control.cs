@@ -18,7 +18,7 @@ public class Control : MonoBehaviour {
 	
 	void OnGUI()
 	{
-		GUI.Label(new Rect(characterPos.x - 10, Screen.height - characterPos.y - Screen.height * 0.15f,50,20),stats.HP.ToString());
+		GUI.Label(new Rect(Screen.width / 2 - 5, Screen.height * 0.75f / 2, 50, 20),stats.HP.ToString());
 	}
 	
 	
