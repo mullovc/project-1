@@ -68,7 +68,8 @@ public class EnemyAI : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		timeScinceLastAttack += Time.deltaTime;
+		if(!main.gameIsPaused)
+			timeScinceLastAttack += Time.deltaTime;
 		
 		if(stats.HP <= 0)
 			Destroy(this.gameObject);

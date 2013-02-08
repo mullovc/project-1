@@ -53,7 +53,7 @@ public class Main : MonoBehaviour {
 		if(gameOver)
 		{
 			gameIsPaused = true;
-			GUI.Box(new Rect((Screen.width * 0.75f) / 2,(Screen.height * 0.75f) / 2,Screen.width * 0.3f,Screen.height * 0.3f),"Game Over");
+			GUI.Box(new Rect((Screen.width * 0.75f) / 2,(Screen.height * 0.75f) / 2,Screen.width * 0.6f,Screen.height * 0.4f),"Game Over");
 		}
 		
 	}
@@ -61,30 +61,35 @@ public class Main : MonoBehaviour {
 	void menuWindow(int windowIndex)
 	{
 		
-		GUI.BeginGroup(new Rect(20,20,Screen.width - 40,Screen.height - 40));
-		{
-			if(GUI.Button(new Rect(0,0,70,20),"Settings"))
-			{
-				showMenuRegister = 1;
-			}
-			if(GUI.Button(new Rect(70,0,70,20),"Map"))
-			{
-				showMenuRegister = 2;
-			}
-			if(GUI.Button(new Rect(140,0,70,20),"Stats"))
-			{
-				showMenuRegister = 3;
-			}
-			if(GUI.Button(new Rect(210,0,70,20),"Close"))
-			{
-				showMenuRegister = 0;
-				menuIsOpen = false;
-				gameIsPaused = false;
-			}
-			if(GUI.Button(new Rect(280,0,70,20),"Quit"))
-			{
-				Application.LoadLevel(0);
-			}
+		GUILayout.BeginArea(new Rect(20,20,Screen.width - 40,Screen.height - 40));
+			
+			GUILayout.BeginHorizontal();
+			
+				if(GUILayout.Button("Settings",GUILayout.Width(70)))
+				{
+					showMenuRegister = 1;
+				}
+				if(GUILayout.Button("Map",GUILayout.Width(70)))
+				{
+					showMenuRegister = 2;
+				}
+				if(GUILayout.Button("Stats",GUILayout.Width(70)))
+				{
+					showMenuRegister = 3;
+				}
+				if(GUILayout.Button("Close",GUILayout.Width(70)))
+				{
+					showMenuRegister = 0;
+					menuIsOpen = false;
+					gameIsPaused = false;
+				}
+				if(GUILayout.Button("Quit",GUILayout.Width(70)))
+				{
+					Application.LoadLevel(0);
+				}
+		
+			GUILayout.EndHorizontal();
+		
 			if(mapCamera != null && showMenuRegister != 2)
 			{
 				Destroy(mapCamera.gameObject);
@@ -93,11 +98,15 @@ public class Main : MonoBehaviour {
 			}
 			if(showMenuRegister == 1)
 			{
-				control.alternativeControl = GUI.Toggle(new Rect(0,30,150,20),control.alternativeControl,"Left screenhalf control");
-				GUI.Label(new Rect(0,50,150,20),"enemy spawnrate: " + spawner.spawnRate);
-				spawner.spawnRate = (int)GUI.HorizontalSlider(new Rect(150,55,150,20),spawner.spawnRate,1,500);
-				GUI.Label(new Rect(0,70,150,20),"enemy spawnlimit: " + spawner.spawnLimit);
-				spawner.spawnLimit = (int)GUI.HorizontalSlider(new Rect(150,75,150,20),spawner.spawnLimit,0,100);
+				GUILayout.BeginArea(new Rect(0,30,Screen.width / 2,Screen.height));
+			
+					control.alternativeControl = GUILayout.Toggle(control.alternativeControl,"Left screenhalf control");
+					GUILayout.Label("enemy spawnrate: " + spawner.spawnRate);
+					spawner.spawnRate = (int)GUILayout.HorizontalSlider(spawner.spawnRate,0,500);
+					GUILayout.Label("enemy spawnlimit: " + spawner.spawnLimit);
+					spawner.spawnLimit = (int)GUILayout.HorizontalSlider(spawner.spawnLimit,0,100);
+			
+				GUILayout.EndArea();
 			}
 			if(showMenuRegister == 2)
 			{
@@ -106,8 +115,8 @@ public class Main : MonoBehaviour {
 				mapCamera.pixelRect = new Rect(40,40,Screen.width - 80,Screen.height - 100);
 				gameIsPaused = false;
 			}
-		}
-		GUI.EndGroup();
+		
+		GUILayout.EndArea();
 	}
 	
 	void loadGame()

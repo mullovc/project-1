@@ -12,24 +12,24 @@ public class MainMenu : MonoBehaviour {
 	void OnGUI()
 	{
 		GUI.skin = ButtonSkin;
-		GUI.BeginGroup(new Rect(Screen.width / 2 - 50, Screen.height / 2 - 50, 100, 100));
+		GUILayout.BeginArea(new Rect(Screen.width / 3, Screen.height / 2 - 50, Screen.width / 3, Screen.height * 0.5f));
 		{
-			if(GUI.Button(new Rect(0,0,100,20),"New Game"))
+			if(GUILayout.Button("New Game"))
 			{
 				Application.LoadLevel(1);
 			}
-			if(GUI.Button(new Rect(0,25,100,20),"Load"))
+			if(GUILayout.Button("Load"))
 			{
 			}
-			if(GUI.Button(new Rect(0,50,100,20),"Settings"))
+			if(GUILayout.Button("Settings"))
 			{
 			}
-			if(GUI.Button(new Rect(0,75,100,20),"Quit"))
+			if(GUILayout.Button("Quit"))
 			{
 				Application.Quit();
 			}
 		}
-		GUI.EndGroup();
+		GUILayout.EndArea();
 	}
 	
 	void Update () {
