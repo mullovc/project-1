@@ -22,9 +22,10 @@ public class Control : MonoBehaviour {
 	{
 		if(!main.gameIsPaused)
 		{
+			GUI.skin.label.fontSize = 14;
 			float w = Screen.width;
 			float h = Screen.height;
-			GUI.Label(new Rect(w / 2 - 5, h * 0.75f / 2, w * 0.6f, h * 0.3f),stats.HP.ToString());
+			GUI.Label(new Rect(w / 2 - 7, h * 0.6f / 2, w * 0.6f, h * 0.3f),stats.HP.ToString());
 		}
 	}
 	
@@ -43,8 +44,8 @@ public class Control : MonoBehaviour {
 			if(!alternativeControl)
 				referencePos = Camera.main.WorldToScreenPoint(transform.position);
 			
-			x = (mousePos.x - referencePos.x) * 0.05f;
-			y = (mousePos.y - referencePos.y) * 0.05f;
+			x = (mousePos.x - referencePos.x) * 0.1f;
+			y = (mousePos.y - referencePos.y) * 0.1f;
 			if(x > 10)
 				x = 10;
 			if(y > 10)

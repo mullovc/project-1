@@ -7,24 +7,23 @@ public class Main : MonoBehaviour {
 	public MyTerrain	terrain_prefab;
 	MyTerrain 			terrain;
 	public NPCSpawner	spawner_prefab;
-	NPCSpawner			spawner;
+	public NPCSpawner	spawner;
 	public GUISkin		buttonSkin;
-	public Camera		mapCamera_prefab;
-	Camera				mapCamera;
-	Control				control;
+	public Control		control;
+	IngameMenu			ingameMenu;
 	
 	public GameObject	character_prefab;
 	public GameObject	character;
 	
 	public bool			gameIsPaused;
-	public bool			gameOver;
-	int					showMenuRegister = 0;
-	bool 				menuIsOpen = false;
+	public bool			gameOver = false;
+	public bool			menuIsOpen = false;
 
 	
 	// Use this for initialization
 	void Start ()
 	{
+		gameOver = false;
 		character = Instantiate(character_prefab,new Vector3(0,1,0),Quaternion.identity) as GameObject;
 		character.transform.parent = this.transform;
 		control = character.GetComponent<Control>();
@@ -33,6 +32,8 @@ public class Main : MonoBehaviour {
 		terrain.buidTerrain();
 		spawner = Instantiate(spawner_prefab,transform.position,Quaternion.identity)as NPCSpawner;
 		spawner.main = this;
+		ingameMenu = GetComponent<IngameMenu>();
+		ingameMenu.main = this;
 	}
 	
 	void OnGUI()
@@ -40,7 +41,7 @@ public class Main : MonoBehaviour {
 		GUI.skin = buttonSkin;
 		if(!menuIsOpen)
 		{
-			if(GUI.Button(new Rect(10,10,60,50),"Avatar"))
+			if(GUI.Button(new Rect(10,10,Screen.width * 0.1f,Screen.height * 0.1f),"Avatar"))
 			{
 				menuIsOpen = true;
 				gameIsPaused = true;
@@ -48,7 +49,7 @@ public class Main : MonoBehaviour {
 		}
 		if(menuIsOpen)
 		{
-			GUI.Window(0,new Rect(20,20,Screen.width - 40, Screen.height - 40),menuWindow,"Menu");
+			GUI.Window(0,new Rect(20,20,Screen.width - 40, Screen.height - 40),ingameMenu.menuWindow,"Menu");
 		}
 		if(gameOver)
 		{
@@ -58,66 +59,6 @@ public class Main : MonoBehaviour {
 		
 	}
 	
-	void menuWindow(int windowIndex)
-	{
-		
-		GUILayout.BeginArea(new Rect(20,20,Screen.width - 40,Screen.height - 40));
-			
-			GUILayout.BeginHorizontal();
-			
-				if(GUILayout.Button("Settings",GUILayout.Width(70)))
-				{
-					showMenuRegister = 1;
-				}
-				if(GUILayout.Button("Map",GUILayout.Width(70)))
-				{
-					showMenuRegister = 2;
-				}
-				if(GUILayout.Button("Stats",GUILayout.Width(70)))
-				{
-					showMenuRegister = 3;
-				}
-				if(GUILayout.Button("Close",GUILayout.Width(70)))
-				{
-					showMenuRegister = 0;
-					menuIsOpen = false;
-					gameIsPaused = false;
-				}
-				if(GUILayout.Button("Quit",GUILayout.Width(70)))
-				{
-					Application.LoadLevel(0);
-				}
-		
-			GUILayout.EndHorizontal();
-		
-			if(mapCamera != null && showMenuRegister != 2)
-			{
-				Destroy(mapCamera.gameObject);
-				if(showMenuRegister != 0)
-					gameIsPaused = true;
-			}
-			if(showMenuRegister == 1)
-			{
-				GUILayout.BeginArea(new Rect(0,30,Screen.width / 2,Screen.height));
-			
-					control.alternativeControl = GUILayout.Toggle(control.alternativeControl,"Left screenhalf control");
-					GUILayout.Label("enemy spawnrate: " + spawner.spawnRate);
-					spawner.spawnRate = (int)GUILayout.HorizontalSlider(spawner.spawnRate,0,500);
-					GUILayout.Label("enemy spawnlimit: " + spawner.spawnLimit);
-					spawner.spawnLimit = (int)GUILayout.HorizontalSlider(spawner.spawnLimit,0,100);
-			
-				GUILayout.EndArea();
-			}
-			if(showMenuRegister == 2)
-			{
-				if(mapCamera == null)
-					mapCamera = Instantiate(mapCamera_prefab,mapCamera_prefab.transform.position,Quaternion.AngleAxis(90,Vector3.right)) as Camera;
-				mapCamera.pixelRect = new Rect(40,40,Screen.width - 80,Screen.height - 100);
-				gameIsPaused = false;
-			}
-		
-		GUILayout.EndArea();
-	}
 	
 	void loadGame()
 	{

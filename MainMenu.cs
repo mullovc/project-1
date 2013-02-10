@@ -12,7 +12,7 @@ public class MainMenu : MonoBehaviour {
 	void OnGUI()
 	{
 		GUI.skin = ButtonSkin;
-		GUILayout.BeginArea(new Rect(Screen.width / 3, Screen.height / 2 - 50, Screen.width / 3, Screen.height * 0.5f));
+		GUILayout.BeginArea(new Rect(Screen.width / 3, Screen.height / 4, Screen.width / 3, Screen.height / 2));
 		{
 			if(GUILayout.Button("New Game"))
 			{
