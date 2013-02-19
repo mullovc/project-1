@@ -4,13 +4,15 @@ using System.IO;
 
 public class Main : MonoBehaviour {
 	
-	public MyTerrain	terrain_prefab;
-	MyTerrain 			terrain;
-	public NPCSpawner	spawner_prefab;
-	public NPCSpawner	spawner;
+	//public MyTerrain	terrain_prefab;
+	//MyTerrain 			terrain;
+	//public NPCSpawner	spawner_prefab;
+	//public NPCSpawner	spawner;
+	public NPCSpawner[]	spawner = new NPCSpawner[5];
 	public GUISkin		buttonSkin;
 	public Control		control;
 	IngameMenu			ingameMenu;
+	Stats				stats;
 	
 	public GameObject	character_prefab;
 	public GameObject	character;
@@ -28,12 +30,9 @@ public class Main : MonoBehaviour {
 		character.transform.parent = this.transform;
 		control = character.GetComponent<Control>();
 		control.main = this;
-		terrain = Instantiate(terrain_prefab,transform.position,Quaternion.identity)as MyTerrain;
-		terrain.buidTerrain();
-		spawner = Instantiate(spawner_prefab,transform.position,Quaternion.identity)as NPCSpawner;
-		spawner.main = this;
 		ingameMenu = GetComponent<IngameMenu>();
 		ingameMenu.main = this;
+		stats = character.GetComponent<Stats>();
 	}
 	
 	void OnGUI()
@@ -41,7 +40,7 @@ public class Main : MonoBehaviour {
 		GUI.skin = buttonSkin;
 		if(!menuIsOpen)
 		{
-			if(GUI.Button(new Rect(10,10,Screen.width * 0.1f,Screen.height * 0.1f),"Avatar"))
+			if(GUI.Button(new Rect(10,10,Screen.width * 0.1f,Screen.height * 0.1f),stats.HP.ToString()))
 			{
 				menuIsOpen = true;
 				gameIsPaused = true;
@@ -54,11 +53,9 @@ public class Main : MonoBehaviour {
 		if(gameOver)
 		{
 			gameIsPaused = true;
-			GUI.Box(new Rect((Screen.width * 0.75f) / 2,(Screen.height * 0.75f) / 2,Screen.width * 0.6f,Screen.height * 0.4f),"Game Over");
+			GUI.Box(new Rect(Screen.width / 4,Screen.height / 3,Screen.width / 2,Screen.height / 5),"Game Over");
 		}
-		
 	}
-	
 	
 	void loadGame()
 	{
@@ -81,6 +78,10 @@ public class Main : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		
+		if(stats.HP <= 0)
+		{
+			gameOver = true;
+			stats.HP = 0;
+		}
 	}
 }

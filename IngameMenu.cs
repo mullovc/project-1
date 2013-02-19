@@ -3,7 +3,7 @@ using System.Collections;
 
 public class IngameMenu : MonoBehaviour {
 	
-	public Main main;
+	public Main 		main;
 	
 	public Camera		mapCamera_prefab;
 	Camera				mapCamera;
@@ -11,18 +11,30 @@ public class IngameMenu : MonoBehaviour {
 	Control				control;
 	NPCSpawner			spawner;
 	
-	int					showMenuRegister = 0;
+	//int					showMenuRegister = 0;
 	float				mapZoom;
 	Vector3				lastFrameMousePos;
+	bool				showFPS;
+	float				timeSinceLastFPSCheck;
+	float				FPSCheckInterval = 5;
+	int					frames;
+	int					FPS;
+	MenuRegistry		showMenuRegistry;
 	
 	
-	// Use this for initialization
-	void Start ()
-	{
+	enum MenuRegistry {
+		None,
+		Settings,
+		SpawnControl,
+		Map,
+		Stats
 	}
+	
 	void OnGUI()
 	{
 		GUI.skin = buttonSkin;
+		if(showFPS)
+			GUI.Label(new Rect(Screen.width - 50,10,50,50),FPS.ToString());
 	}
 	
 	public void menuWindow(int windowIndex)
@@ -35,21 +47,26 @@ public class IngameMenu : MonoBehaviour {
 			
 				if(GUILayout.Button("Settings"))
 				{
-					showMenuRegister = 1;
+					showMenuRegistry = MenuRegistry.Settings;
+				}
+				if(GUILayout.Button("Spawn-Control"))
+				{
+					showMenuRegistry = MenuRegistry.SpawnControl;
 				}
 				if(GUILayout.Button("Map"))
 				{
-					showMenuRegister = 2;
+					showMenuRegistry = MenuRegistry.Map;
 					mapZoom = 35;
 					
 				}
 				if(GUILayout.Button("Stats"))
 				{
-					showMenuRegister = 3;
+					showMenuRegistry = MenuRegistry.Stats;
 				}
 				if(GUILayout.Button("Close"))
 				{
-					showMenuRegister = 0;
+					if(mapCamera != null)
+						Destroy(mapCamera.gameObject);
 					main.menuIsOpen = false;
 					main.gameIsPaused = false;
 				}
@@ -62,49 +79,74 @@ public class IngameMenu : MonoBehaviour {
 			
 			GUILayout.EndArea();
 		
-			if(mapCamera != null && showMenuRegister != 2)
+			if(mapCamera != null && showMenuRegistry != MenuRegistry.Map)
 			{
 				Destroy(mapCamera.gameObject);
 			}
-			if(showMenuRegister == 1)
-			{
-				GUILayout.BeginArea(new Rect(0,Screen.height * 0.11f,Screen.width / 2,Screen.height));
 			
-					main.control.alternativeControl = GUILayout.Toggle(main.control.alternativeControl,"Left screenhalf control");
-					GUILayout.Label("enemy spawnrate: " + main.spawner.spawnRate);
-					main.spawner.spawnRate = (int)GUILayout.HorizontalSlider(main.spawner.spawnRate,0,500);
-					GUILayout.Label("enemy spawnlimit: " + main.spawner.spawnLimit);
-					main.spawner.spawnLimit = (int)GUILayout.HorizontalSlider(main.spawner.spawnLimit,0,100);
-			
-				GUILayout.EndArea();
-			}
-			if(showMenuRegister == 2)
+			switch(showMenuRegistry)
 			{
-				if(mapCamera == null)
-					mapCamera = Instantiate(mapCamera_prefab,mapCamera_prefab.transform.position,Quaternion.AngleAxis(90,Vector3.right)) as Camera;
-				mapCamera.pixelRect = new Rect(40,40,Screen.width - 80,Screen.height - 100);
-				mapZoom = GUI.HorizontalSlider(new Rect(0,100,Screen.width * 0.25f,25),mapZoom,5,50);
-				mapCamera.orthographicSize = mapZoom;
+				case MenuRegistry.Settings:
 				
-				if(Input.GetMouseButtonDown(0))
-				{
-					lastFrameMousePos = Input.mousePosition;
-				}
-				if(Input.GetMouseButton(0))
-				{
-					float deltaX = (lastFrameMousePos.x - Input.mousePosition.x) * 0.005f * mapZoom;
-					float deltaY = (lastFrameMousePos.y - Input.mousePosition.y) * 0.005f * mapZoom;
-					mapCamera.transform.Translate(deltaX,deltaY,0);
-					lastFrameMousePos = Input.mousePosition;
-				}
+					GUILayout.BeginArea(new Rect(0,Screen.height * 0.11f,Screen.width / 2,Screen.height));
+					
+						main.control.alternativeControl = GUILayout.Toggle(main.control.alternativeControl,"Left screenhalf control");
+						showFPS = GUILayout.Toggle(showFPS,"Show FPS");
+					
+					GUILayout.EndArea();
+					break;
+			
+				case MenuRegistry.SpawnControl:
+				
+					GUILayout.BeginArea(new Rect(0,Screen.height * 0.11f,Screen.width / 2,Screen.height));
+					
+						for(int i = 0; i < 2; i++)
+						{
+							GUILayout.Label("Spawner " + (i + 1) + " spawnrate: " + main.spawner[i].spawnRate);
+							main.spawner[i].spawnRate = (int)GUILayout.HorizontalSlider(main.spawner[i].spawnRate,0,500);
+							GUILayout.Label("Spawner " + (i + 1) + " spawnlimit: " + main.spawner[i].spawnLimit);
+							main.spawner[i].spawnLimit = (int)GUILayout.HorizontalSlider(main.spawner[i].spawnLimit,0,100);
+						}
+					
+					GUILayout.EndArea();
+					break;
+				
+				case MenuRegistry.Map:
+				
+					if(mapCamera == null)
+						mapCamera = Instantiate(mapCamera_prefab,mapCamera_prefab.transform.position,Quaternion.AngleAxis(90,Vector3.right)) as Camera;
+					mapCamera.pixelRect = new Rect(40,40,Screen.width - 80,Screen.height - 100);
+					mapZoom = GUI.HorizontalSlider(new Rect(0,100,Screen.width * 0.25f,25),mapZoom,2,50);
+					mapCamera.orthographicSize = mapZoom;
+					
+					if(Input.GetMouseButtonDown(0))
+					{
+						lastFrameMousePos = Input.mousePosition;
+					}
+					if(Input.GetMouseButton(0))
+					{
+						float deltaX = (lastFrameMousePos.x - Input.mousePosition.x) * 0.005f * mapZoom;
+						float deltaY = (lastFrameMousePos.y - Input.mousePosition.y) * 0.005f * mapZoom;
+						mapCamera.transform.Translate(deltaX,deltaY,0);
+						lastFrameMousePos = Input.mousePosition;
+					}
+					break;
 			}
 		
 		GUILayout.EndArea();
 	}
 	
-	// Update is called once per frame
+	
 	void Update ()
 	{
-	
+		timeSinceLastFPSCheck += Time.deltaTime;
+		frames++;
+		
+		if(timeSinceLastFPSCheck >= FPSCheckInterval)
+		{
+			FPS = (int)(frames / FPSCheckInterval);
+			frames = 0;
+			timeSinceLastFPSCheck = 0;
+		}
 	}
 }

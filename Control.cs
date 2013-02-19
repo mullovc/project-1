@@ -4,48 +4,20 @@ using System.Collections;
 public class Control : MonoBehaviour {
 	
 	public Main		main;
-	Stats			stats;
 	
 	public bool 	alternativeControl = false;
 	Vector2 		referencePos;
+	//float			pressLength;
+	Vector2 		mousePos;
 	
-	float		 	x;
-	float			y;
-	float			alpha;
 	
-	void Start ()
-	{
-		stats = transform.GetComponent<Stats>();
-	}
-	
-	void OnGUI()
+	void moveCharacter(Vector2 referencePoint,Vector2 walkToPoint)
 	{
 		if(!main.gameIsPaused)
 		{
-			GUI.skin.label.fontSize = 14;
-			float w = Screen.width;
-			float h = Screen.height;
-			GUI.Label(new Rect(w / 2 - 7, h * 0.6f / 2, w * 0.6f, h * 0.3f),stats.HP.ToString());
-		}
-	}
-	
-	
-	void Update ()
-	{
-		if(Input.GetMouseButtonDown(0) && alternativeControl)
-		{
-			referencePos = Input.mousePosition;
-		}
-		
-		if(Input.GetMouseButton(0) && !main.gameIsPaused)
-		{
-			Vector2 mousePos = Input.mousePosition;
-			
-			if(!alternativeControl)
-				referencePos = Camera.main.WorldToScreenPoint(transform.position);
-			
-			x = (mousePos.x - referencePos.x) * 0.1f;
-			y = (mousePos.y - referencePos.y) * 0.1f;
+			float x = (walkToPoint.x - referencePos.x) * 0.1f;
+			float y = (walkToPoint.y - referencePos.y) * 0.1f;
+			float alpha = 0;
 			if(x > 10)
 				x = 10;
 			if(y > 10)
@@ -54,20 +26,52 @@ public class Control : MonoBehaviour {
 				x = -10;
 			if(y < -10)
 				y= -10;
-			if(!alternativeControl || referencePos.x < Screen.width / 2)
-				Camera.main.transform.Translate(new Vector3(x * Time.fixedDeltaTime, 0, y * Time.fixedDeltaTime),Space.World);
 			
-			if(referencePos != mousePos)
-				alpha = Mathf.Atan((mousePos.x - referencePos.x) / (mousePos.y - referencePos.y)) * (180 / Mathf.PI);
+			Camera.main.transform.Translate(new Vector3(x * Time.fixedDeltaTime, 0, y * Time.fixedDeltaTime),Space.World);
+			
+			if(referencePos != walkToPoint)
+				alpha = Mathf.Atan((walkToPoint.x - referencePos.x) / (walkToPoint.y - referencePos.y)) * (180 / Mathf.PI);
 			
 			if(y < 0)
 				alpha += 180;
-        	transform.eulerAngles = new Vector3(0, alpha, 0);
-		}
-		if(stats.HP <= 0)
-		{
-			main.gameOver = true;
-		}
 			
+	        transform.eulerAngles = new Vector3(0, alpha, 0);
+		}
+	}
+	
+	void Update ()
+	{
+		if(Input.GetMouseButtonDown(0) && alternativeControl)
+		{
+			referencePos = Input.mousePosition;
+		}
+		/*
+		if(Input.GetMouseButtonDown(0))
+		{
+			pressLength = 0;
+		}
+		*/
+		if(Input.GetMouseButton(0))
+		{
+			mousePos = Input.mousePosition;
+			
+			if(!alternativeControl)
+				referencePos = Camera.main.WorldToScreenPoint(transform.position);
+			
+			moveCharacter(referencePos,mousePos);
+			
+			//pressLength += Time.deltaTime;
+		}
+		/*
+		else if(pressLength < 0.3f && pressLength > 0)
+		{
+			if(Input.GetMouseButtonUp(0))
+			{
+				mousePos.x = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
+				mousePos.y = Camera.main.ScreenToWorldPoint(Input.mousePosition).z + 5;
+			}
+			moveCharacter(referencePos, Camera.main.WorldToScreenPoint(mousePos));
+		}
+		*/
 	}
 }

@@ -3,16 +3,17 @@ using System.Collections;
 
 public class EnemyAI : MonoBehaviour {
 	
-	public Main		main;
+	public Main			main;
 	
-	public Stats 	stats;
-	Stats			characterStats;
+	public Stats 		stats;
+	Stats				characterStats;
 	
-	float 			x;
-	float 			z;
-	float 			alpha;
-	public float	timeScinceLastAttack;
-	Vector2			enemyScreenPos;
+	float 				x;
+	float 				z;
+	float 				alpha;
+	public float		timeScinceLastAttack;
+	Vector2				enemyScreenPos;
+	public int			spawnedBySpawnerNr;
 	
 	
 	
@@ -48,7 +49,10 @@ public class EnemyAI : MonoBehaviour {
 			z = -10;
 		
 		if(!main.gameIsPaused && !(x < 1 && x > -1 && z < 1 && z > -1))
+		{
 			transform.Translate(new Vector3(x * Time.fixedDeltaTime, 0, z * Time.fixedDeltaTime),Space.World);
+			animation.Play("run");
+		}
 		
 		alpha = Mathf.Atan((characterPos.x - this.transform.position.x) / (characterPos.z - this.transform.position.z)) * (180 / Mathf.PI);
 		if(z < 0)
@@ -60,9 +64,28 @@ public class EnemyAI : MonoBehaviour {
 	{
 		if(timeScinceLastAttack >= stats.attackRate && !main.gameIsPaused && (x < 1 && x > -1 && z < 1 && z > -1))
 		{
+			animation.Play("attack");
 			characterStats.HP--;
 			timeScinceLastAttack = 0;
 		}
+	}
+	
+	void die()
+	{
+		animation.Play("die");
+		main.spawner[spawnedBySpawnerNr].spawnedNPCs--;
+		Destroy(this.gameObject);
+	}
+	
+	void getDamage()
+	{
+		animation.Play("gethit");
+		stats.HP--;
+	}
+	
+	void OnMouseDown()
+	{
+		getDamage();
 	}
 	
 	// Update is called once per frame
@@ -72,7 +95,9 @@ public class EnemyAI : MonoBehaviour {
 			timeScinceLastAttack += Time.deltaTime;
 		
 		if(stats.HP <= 0)
-			Destroy(this.gameObject);
+		{
+			die ();
+		}
 		
 		chaseCharacter();
 		attack();
