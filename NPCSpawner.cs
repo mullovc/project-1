@@ -20,7 +20,9 @@ public class NPCSpawner : MonoBehaviour {
 	public int 			spawnLimit;
 	public int			spawnRate;
 	public int			spawnerID;
-	public float		activityArea;
+	public int			minSpawnRadius;
+	public int			maxSpawnRadius;
+	public float		activityRadius;
 	public bool			spawnerIsActive;
 	
 	public NPCType 		spawnType;
@@ -64,9 +66,17 @@ public class NPCSpawner : MonoBehaviour {
 		{
 			if(enemy[i] == null)
 			{
-				float spawnPosX = Camera.main.transform.position.x + rand.Next(10) - 5;
-				float spawnPosZ = Camera.main.transform.position.z + rand.Next(10);
-				enemy[spawnedNPCs] = Instantiate(enemyModel,new Vector3(spawnPosX,1,spawnPosZ),Quaternion.identity) as GameObject;
+				float alpha = rand.Next(180) - 90;
+				float a = rand.Next(minSpawnRadius,maxSpawnRadius);
+				float spawnPosX = Mathf.Cos(alpha * (Mathf.PI / 180.0f)) * a;
+				float spawnPosZ =  Mathf.Sin(alpha * (Mathf.PI / 180.0f)) * a;
+				if(rand.Next(2) == 1)
+					spawnPosX *= -1;
+				
+				enemy[spawnedNPCs] = Instantiate(enemyModel,new Vector3(		// -->
+				main.character.transform.position.x + spawnPosX,1,				// -->
+				main.character.transform.position.z + spawnPosZ),				// -->
+				Quaternion.identity) as GameObject;
 				
 				enemy[spawnedNPCs].GetComponent<EnemyAI>().spawnedBySpawnerNr = spawnerID;
 				
@@ -80,10 +90,10 @@ public class NPCSpawner : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-		if((main.character.transform.position.x - transform.position.x) < activityArea 
-		&& (main.character.transform.position.x - transform.position.x) > -activityArea
-		&& (main.character.transform.position.z - transform.position.z) < activityArea 
-		&& (main.character.transform.position.z - transform.position.z) > -activityArea)
+		if(Mathf.Sqrt((main.character.transform.position.x - transform.position.x)
+		* (main.character.transform.position.x - transform.position.x)
+		+ (main.character.transform.position.z - transform.position.z)
+		* (main.character.transform.position.z - transform.position.z)) < activityRadius)
 			spawnerIsActive = true;
 		else
 		{
@@ -116,5 +126,7 @@ public class NPCSpawner : MonoBehaviour {
 				}
 			}
 		}
+		if(transform.FindChild("spawnArea").transform.localScale != new Vector3(activityRadius * 2,0.1f,activityRadius * 2))
+			transform.FindChild("spawnArea").transform.localScale = new Vector3(activityRadius * 2,0.1f,activityRadius * 2);
 	}
 }

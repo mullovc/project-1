@@ -15,6 +15,7 @@ public class EnemyAI : MonoBehaviour {
 	Vector2				enemyScreenPos;
 	public int			spawnedBySpawnerNr;
 	
+	public Texture2D	healthBar;
 	
 	
 	// Use this for initialization
@@ -28,9 +29,10 @@ public class EnemyAI : MonoBehaviour {
 	
 	void OnGUI()
 	{
-		//string HP = stats.HP.ToString();
+		//GUI.skin = MySkin;
+		GUI.skin.box.normal.background = healthBar;
 		enemyScreenPos = Camera.main.WorldToScreenPoint(transform.position);
-		GUI.Label(new Rect(enemyScreenPos.x - 10, Screen.height - enemyScreenPos.y - Screen.height * 0.15f,50,20),stats.HP.ToString());
+		GUI.Box(new Rect(enemyScreenPos.x - stats.HP * 5 / 2, Screen.height - enemyScreenPos.y - Screen.height * 0.15f,stats.HP * 5,10),"");
 	}
 	
 	void chaseCharacter()
@@ -79,7 +81,7 @@ public class EnemyAI : MonoBehaviour {
 	
 	void getDamage()
 	{
-		animation.Play("gethit");
+		animation.PlayQueued("gethit");
 		stats.HP--;
 	}
 	

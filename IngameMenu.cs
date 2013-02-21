@@ -9,9 +9,8 @@ public class IngameMenu : MonoBehaviour {
 	Camera				mapCamera;
 	public GUISkin		buttonSkin;
 	Control				control;
-	NPCSpawner			spawner;
+	//NPCSpawner			spawner;
 	
-	//int					showMenuRegister = 0;
 	float				mapZoom;
 	Vector3				lastFrameMousePos;
 	bool				showFPS;
@@ -20,6 +19,7 @@ public class IngameMenu : MonoBehaviour {
 	int					frames;
 	int					FPS;
 	MenuRegistry		showMenuRegistry;
+	Vector2				scrollPosition;
 	
 	
 	enum MenuRegistry {
@@ -98,7 +98,7 @@ public class IngameMenu : MonoBehaviour {
 			
 				case MenuRegistry.SpawnControl:
 				
-					GUILayout.BeginArea(new Rect(0,Screen.height * 0.11f,Screen.width / 2,Screen.height));
+					scrollPosition = GUI.BeginScrollView(new Rect(0,Screen.height * 0.11f,Screen.width / 2 + 35,Screen.height - 100),scrollPosition,new Rect(0,0,Screen.width / 2,Screen.height * 2));
 					
 						for(int i = 0; i < 2; i++)
 						{
@@ -106,9 +106,11 @@ public class IngameMenu : MonoBehaviour {
 							main.spawner[i].spawnRate = (int)GUILayout.HorizontalSlider(main.spawner[i].spawnRate,0,500);
 							GUILayout.Label("Spawner " + (i + 1) + " spawnlimit: " + main.spawner[i].spawnLimit);
 							main.spawner[i].spawnLimit = (int)GUILayout.HorizontalSlider(main.spawner[i].spawnLimit,0,100);
+							GUILayout.Label("Spawner " + (i + 1) + " activity radius: " + main.spawner[i].activityRadius);
+							main.spawner[i].activityRadius = (int)GUILayout.HorizontalSlider(main.spawner[i].activityRadius,0,50);
 						}
 					
-					GUILayout.EndArea();
+					GUI.EndScrollView();
 					break;
 				
 				case MenuRegistry.Map:
