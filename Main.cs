@@ -12,7 +12,7 @@ public class Main : MonoBehaviour {
 	public GUISkin		buttonSkin;
 	public Control		control;
 	IngameMenu			ingameMenu;
-	Stats				stats;
+	public Stats		stats;
 	
 	public GameObject	character_prefab;
 	public GameObject	character;
@@ -33,6 +33,7 @@ public class Main : MonoBehaviour {
 		ingameMenu = GetComponent<IngameMenu>();
 		ingameMenu.main = this;
 		stats = character.GetComponent<Stats>();
+		stats.level = 1;
 	}
 	
 	void OnGUI()
@@ -40,11 +41,12 @@ public class Main : MonoBehaviour {
 		GUI.skin = buttonSkin;
 		if(!menuIsOpen)
 		{
-			if(GUI.Button(new Rect(10,10,Screen.width * 0.1f,Screen.height * 0.1f),stats.HP.ToString()))
+			if(GUI.Button(new Rect(Screen.width * 0.83f,10,Screen.width * 0.15f,Screen.height * 0.15f),"Menu"))
 			{
-				menuIsOpen = true;
-				gameIsPaused = true;
+					menuIsOpen = true;
+					gameIsPaused = true;
 			}
+			GUI.Box(new Rect(10,10,(float)stats.HP / (float)stats.maxHP * 200,Screen.height * 0.07f),stats.HP.ToString());
 		}
 		if(menuIsOpen)
 		{

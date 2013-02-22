@@ -7,13 +7,16 @@ public class Stats : MonoBehaviour {
 	
 	public int 			HP;
 	public float 		attackRate;
+	public int			maxHP;
+	public int			level;
+	public float		attackRange;
 	
 	
 	// Use this for initialization
 	void Start ()
 	{
-		HP = 10;
-		attackRate = 2;
+		maxHP = level * 10;
+		HP = maxHP;
 	}
 	
 	// Update is called once per frame

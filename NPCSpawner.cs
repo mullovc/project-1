@@ -24,6 +24,9 @@ public class NPCSpawner : MonoBehaviour {
 	public int			maxSpawnRadius;
 	public float		activityRadius;
 	public bool			spawnerIsActive;
+	public int			NPCLevel;
+	public float		enemyAttackRate;
+	public float		enemyAttackRange;
 	
 	public NPCType 		spawnType;
 	
@@ -78,8 +81,12 @@ public class NPCSpawner : MonoBehaviour {
 				main.character.transform.position.z + spawnPosZ),				// -->
 				Quaternion.identity) as GameObject;
 				
-				enemy[spawnedNPCs].GetComponent<EnemyAI>().spawnedBySpawnerNr = spawnerID;
-				
+				EnemyAI ai = enemy[spawnedNPCs].GetComponent<EnemyAI>();
+				ai.spawnedBySpawnerNr = spawnerID;
+				Stats enemyStats = enemy[spawnedNPCs].GetComponent<Stats>();
+				enemyStats.level = NPCLevel;
+				enemyStats.attackRate = enemyAttackRate;
+				enemyStats.attackRange = enemyAttackRange;
 				
 				spawnedNPCs++;
 				break;
@@ -109,7 +116,7 @@ public class NPCSpawner : MonoBehaviour {
 		
 		if(spawnerIsActive)
 		{
-			if(spawnedNPCs < spawnLimit)
+			if(spawnedNPCs < spawnLimit && hostileSpawner)
 			{
 				int spawnChance = rand.Next(spawnRate);
 				

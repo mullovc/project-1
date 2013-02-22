@@ -24,15 +24,22 @@ public class EnemyAI : MonoBehaviour {
 		main = Camera.main.GetComponent<Main>();
 		stats = transform.GetComponent<Stats>();
 		stats.statsOwner = this.transform;
-		characterStats = main.character.GetComponent<Stats>();
+		characterStats = main.stats;
 	}
 	
 	void OnGUI()
 	{
-		//GUI.skin = MySkin;
 		GUI.skin.box.normal.background = healthBar;
 		enemyScreenPos = Camera.main.WorldToScreenPoint(transform.position);
 		GUI.Box(new Rect(enemyScreenPos.x - stats.HP * 5 / 2, Screen.height - enemyScreenPos.y - Screen.height * 0.15f,stats.HP * 5,10),"");
+	}
+	
+	float getDistanceToCharacter()
+	{
+		return Mathf.Sqrt((main.character.transform.position.x - transform.position.x)
+		* (main.character.transform.position.x - transform.position.x)
+		+ (main.character.transform.position.z - transform.position.z)
+		* (main.character.transform.position.z - transform.position.z));
 	}
 	
 	void chaseCharacter()
@@ -50,7 +57,7 @@ public class EnemyAI : MonoBehaviour {
 		if(z < -10)
 			z = -10;
 		
-		if(!main.gameIsPaused && !(x < 1 && x > -1 && z < 1 && z > -1))
+		if(!main.gameIsPaused && getDistanceToCharacter() > stats.attackRange)
 		{
 			transform.Translate(new Vector3(x * Time.fixedDeltaTime, 0, z * Time.fixedDeltaTime),Space.World);
 			animation.Play("run");
@@ -64,10 +71,10 @@ public class EnemyAI : MonoBehaviour {
 	
 	void attack()
 	{
-		if(timeScinceLastAttack >= stats.attackRate && !main.gameIsPaused && (x < 1 && x > -1 && z < 1 && z > -1))
+		if(timeScinceLastAttack >= stats.attackRate && !main.gameIsPaused && getDistanceToCharacter() <= stats.attackRange)
 		{
 			animation.Play("attack");
-			characterStats.HP--;
+			characterStats.HP -= stats.level;
 			timeScinceLastAttack = 0;
 		}
 	}
@@ -82,7 +89,7 @@ public class EnemyAI : MonoBehaviour {
 	void getDamage()
 	{
 		animation.PlayQueued("gethit");
-		stats.HP--;
+		stats.HP -= characterStats.level;
 	}
 	
 	void OnMouseDown()

@@ -9,7 +9,6 @@ public class IngameMenu : MonoBehaviour {
 	Camera				mapCamera;
 	public GUISkin		buttonSkin;
 	Control				control;
-	//NPCSpawner			spawner;
 	
 	float				mapZoom;
 	Vector3				lastFrameMousePos;
@@ -25,7 +24,7 @@ public class IngameMenu : MonoBehaviour {
 	enum MenuRegistry {
 		None,
 		Settings,
-		SpawnControl,
+		Cheats,
 		Map,
 		Stats
 	}
@@ -49,9 +48,9 @@ public class IngameMenu : MonoBehaviour {
 				{
 					showMenuRegistry = MenuRegistry.Settings;
 				}
-				if(GUILayout.Button("Spawn-Control"))
+				if(GUILayout.Button("Cheats"))
 				{
-					showMenuRegistry = MenuRegistry.SpawnControl;
+					showMenuRegistry = MenuRegistry.Cheats;
 				}
 				if(GUILayout.Button("Map"))
 				{
@@ -96,18 +95,18 @@ public class IngameMenu : MonoBehaviour {
 					GUILayout.EndArea();
 					break;
 			
-				case MenuRegistry.SpawnControl:
+				case MenuRegistry.Cheats:
 				
-					scrollPosition = GUI.BeginScrollView(new Rect(0,Screen.height * 0.11f,Screen.width / 2 + 35,Screen.height - 100),scrollPosition,new Rect(0,0,Screen.width / 2,Screen.height * 2));
-					
+					scrollPosition = GUI.BeginScrollView(new Rect(0,Screen.height * 0.11f,Screen.width / 2 + 35,Screen.height - 120),scrollPosition,new Rect(0,0,Screen.width / 2,Screen.height * 2));
+						
 						for(int i = 0; i < 2; i++)
 						{
 							GUILayout.Label("Spawner " + (i + 1) + " spawnrate: " + main.spawner[i].spawnRate);
-							main.spawner[i].spawnRate = (int)GUILayout.HorizontalSlider(main.spawner[i].spawnRate,0,500);
+							main.spawner[i].spawnRate = (int)GUILayout.HorizontalSlider(main.spawner[i].spawnRate,0,500,GUILayout.Width(Screen.width / 2));
 							GUILayout.Label("Spawner " + (i + 1) + " spawnlimit: " + main.spawner[i].spawnLimit);
-							main.spawner[i].spawnLimit = (int)GUILayout.HorizontalSlider(main.spawner[i].spawnLimit,0,100);
+							main.spawner[i].spawnLimit = (int)GUILayout.HorizontalSlider(main.spawner[i].spawnLimit,0,100,GUILayout.Width(Screen.width / 2));
 							GUILayout.Label("Spawner " + (i + 1) + " activity radius: " + main.spawner[i].activityRadius);
-							main.spawner[i].activityRadius = (int)GUILayout.HorizontalSlider(main.spawner[i].activityRadius,0,50);
+							main.spawner[i].activityRadius = (int)GUILayout.HorizontalSlider(main.spawner[i].activityRadius,0,50,GUILayout.Width(Screen.width / 2));
 						}
 					
 					GUI.EndScrollView();

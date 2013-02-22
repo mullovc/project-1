@@ -6,7 +6,6 @@ public class MainMenu : MonoBehaviour {
 	public GUISkin ButtonSkin;
 	
 	void Start () {
-	
 	}
 	
 	void OnGUI()
