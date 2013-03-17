@@ -15,20 +15,24 @@ public class NPCSpawner : MonoBehaviour {
 	GameObject[]		enemy = new GameObject[100];
 	
 	System.Random 		rand = new System.Random();
-	public bool 		hostileSpawner;
 	public int			spawnedNPCs;
+	
+	public int			spawnerID;
+	public bool 		hostileSpawner;
 	public int 			spawnLimit;
 	public int			spawnRate;
-	public int			spawnerID;
 	public int			minSpawnRadius;
 	public int			maxSpawnRadius;
 	public float		activityRadius;
 	public bool			spawnerIsActive;
+	
 	public int			NPCLevel;
 	public float		enemyAttackRate;
 	public float		enemyAttackRange;
-	
+	public float		spotAngle;
+	public float		spotDistance;
 	public NPCType 		spawnType;
+	public int			expGain;
 	
 	
 	// Use this for initialization
@@ -76,17 +80,23 @@ public class NPCSpawner : MonoBehaviour {
 				if(rand.Next(2) == 1)
 					spawnPosX *= -1;
 				
-				enemy[spawnedNPCs] = Instantiate(enemyModel,new Vector3(		// -->
+				enemy[i] = Instantiate(enemyModel,new Vector3(					// -->
 				main.character.transform.position.x + spawnPosX,1,				// -->
 				main.character.transform.position.z + spawnPosZ),				// -->
 				Quaternion.identity) as GameObject;
 				
-				EnemyAI ai = enemy[spawnedNPCs].GetComponent<EnemyAI>();
+				float beta = rand.Next(360);
+				enemy[i].transform.eulerAngles = new Vector3(0,beta,0);
+				
+				EnemyAI ai = enemy[i].GetComponent<EnemyAI>();
 				ai.spawnedBySpawnerNr = spawnerID;
-				Stats enemyStats = enemy[spawnedNPCs].GetComponent<Stats>();
+				Stats enemyStats = enemy[i].GetComponent<Stats>();
 				enemyStats.level = NPCLevel;
 				enemyStats.attackRate = enemyAttackRate;
 				enemyStats.attackRange = enemyAttackRange;
+				enemyStats.spotAngle = spotAngle;
+				enemyStats.spotDistance = spotDistance;
+				enemyStats.expGain = expGain;
 				
 				spawnedNPCs++;
 				break;

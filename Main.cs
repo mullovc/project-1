@@ -4,28 +4,25 @@ using System.IO;
 
 public class Main : MonoBehaviour {
 	
-	//public MyTerrain	terrain_prefab;
-	//MyTerrain 			terrain;
-	//public NPCSpawner	spawner_prefab;
-	//public NPCSpawner	spawner;
 	public NPCSpawner[]	spawner = new NPCSpawner[5];
 	public GUISkin		buttonSkin;
 	public Control		control;
 	IngameMenu			ingameMenu;
 	public Stats		stats;
+	public SaveLoader			saveLoader;
 	
 	public GameObject	character_prefab;
 	public GameObject	character;
 	
 	public bool			gameIsPaused;
-	public bool			gameOver = false;
+	public bool			gameOver;
 	public bool			menuIsOpen = false;
+	public bool			godMode;
 
 	
 	// Use this for initialization
 	void Start ()
 	{
-		gameOver = false;
 		character = Instantiate(character_prefab,new Vector3(0,1,0),Quaternion.identity) as GameObject;
 		character.transform.parent = this.transform;
 		control = character.GetComponent<Control>();
@@ -33,7 +30,17 @@ public class Main : MonoBehaviour {
 		ingameMenu = GetComponent<IngameMenu>();
 		ingameMenu.main = this;
 		stats = character.GetComponent<Stats>();
+		stats.statsOwner = this.transform;
 		stats.level = 1;
+		stats.updateStats(true);
+		saveLoader = GetComponent<SaveLoader>();
+		saveLoader.main = this;
+		
+		if(GameObject.Find("load") != null)
+		{
+			saveLoader.loadGame();
+			Destroy(GameObject.Find("load"));
+		}
 	}
 	
 	void OnGUI()
@@ -48,10 +55,12 @@ public class Main : MonoBehaviour {
 			}
 			GUI.Box(new Rect(10,10,(float)stats.HP / (float)stats.maxHP * 200,Screen.height * 0.07f),stats.HP.ToString());
 		}
+		
 		if(menuIsOpen)
 		{
 			GUI.Window(0,new Rect(20,20,Screen.width - 40, Screen.height - 40),ingameMenu.menuWindow,"Menu");
 		}
+		
 		if(gameOver)
 		{
 			gameIsPaused = true;
@@ -59,28 +68,10 @@ public class Main : MonoBehaviour {
 		}
 	}
 	
-	void loadGame()
-	{
-		string x_str = "", z_str = "";
-		int x = 0, z = 0;
-
-        FileInfo SourceFile = new FileInfo ("save.txt");
-        StreamReader reader = SourceFile.OpenText();
-		
-        x_str = reader.ReadLine();
-        z_str = reader.ReadLine();
-		reader.Close();
-		
-		x = int.Parse(x_str);
-		z = int.Parse(z_str);
-		
-		transform.position = new Vector3(x,6.622f,z);
-	}
 	
-	// Update is called once per frame
 	void Update ()
 	{
-		if(stats.HP <= 0)
+		if(stats.HP <= 0 && stats.maxHP > 0)
 		{
 			gameOver = true;
 			stats.HP = 0;

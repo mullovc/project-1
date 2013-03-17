@@ -88,7 +88,9 @@ public class IngameMenu : MonoBehaviour {
 				case MenuRegistry.Settings:
 				
 					GUILayout.BeginArea(new Rect(0,Screen.height * 0.11f,Screen.width / 2,Screen.height));
-					
+						
+						if(GUILayout.Button("save",GUILayout.Height(Screen.height * 0.1f)))
+							main.saveLoader.saveGame();
 						main.control.alternativeControl = GUILayout.Toggle(main.control.alternativeControl,"Left screenhalf control");
 						showFPS = GUILayout.Toggle(showFPS,"Show FPS");
 					
@@ -99,8 +101,16 @@ public class IngameMenu : MonoBehaviour {
 				
 					scrollPosition = GUI.BeginScrollView(new Rect(0,Screen.height * 0.11f,Screen.width / 2 + 35,Screen.height - 120),scrollPosition,new Rect(0,0,Screen.width / 2,Screen.height * 2));
 						
+						main.godMode = GUILayout.Toggle(main.godMode,"Godmode");
+						if(GUILayout.Button("Restore HP",GUILayout.Width(Screen.width * 0.2f)))
+							main.stats.updateStats(true);
+						GUILayout.Label("Character Level: " + main.stats.level);
+						main.stats.level = (int)GUILayout.HorizontalSlider(main.stats.level,1,100,GUILayout.Width(Screen.width / 2));
+			
 						for(int i = 0; i < 2; i++)
 						{
+							GUILayout.Label("Spawner " + (i + 1) + " NPC-level: " + main.spawner[i].NPCLevel);
+							main.spawner[i].NPCLevel = (int)GUILayout.HorizontalSlider(main.spawner[i].NPCLevel,1,100,GUILayout.Width(Screen.width / 2));
 							GUILayout.Label("Spawner " + (i + 1) + " spawnrate: " + main.spawner[i].spawnRate);
 							main.spawner[i].spawnRate = (int)GUILayout.HorizontalSlider(main.spawner[i].spawnRate,0,500,GUILayout.Width(Screen.width / 2));
 							GUILayout.Label("Spawner " + (i + 1) + " spawnlimit: " + main.spawner[i].spawnLimit);

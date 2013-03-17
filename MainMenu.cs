@@ -5,7 +5,8 @@ public class MainMenu : MonoBehaviour {
 	
 	public GUISkin ButtonSkin;
 	
-	void Start () {
+	void Start ()
+	{
 	}
 	
 	void OnGUI()
@@ -19,6 +20,11 @@ public class MainMenu : MonoBehaviour {
 			}
 			if(GUILayout.Button("Load"))
 			{
+				GameObject load = new GameObject();
+				load = Instantiate(load) as GameObject;
+				load.gameObject.name = "load";
+				DontDestroyOnLoad(load);
+				Application.LoadLevel(1);
 			}
 			if(GUILayout.Button("Settings"))
 			{

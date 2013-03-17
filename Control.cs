@@ -34,7 +34,6 @@ public class Control : MonoBehaviour {
 			
 			if(y < 0)
 				alpha += 180;
-				
 	        transform.eulerAngles = new Vector3(0, alpha, 0);
 		}
 	}
